@@ -70,6 +70,28 @@ const deviceIds = {
  * @param [error=null] - Error from the previous Room session, if any
  */
 async function selectAndJoinRoom(error = null) {
+  const participantId = new URLSearchParams(document.URL.split("?")[1]).get("participant-id");
+  const participantUrl = `https://api-cicd.carium.com/courier/v1/video-participants/${participantId}/get-tokens/`
+  const response = await fetch(participantUrl);
+  const data = await response.json();
+  const token = data["access-token"];
+  const roomName = data["name"];
+
+  // Add the specified audio device ID to ConnectOptions.
+  connectOptions.audio = { deviceId: { exact: deviceIds.audio } };
+
+  // Add the specified Room name to ConnectOptions.
+  connectOptions.name = roomName;
+
+  // Add the specified video device ID to ConnectOptions.
+  connectOptions.video.deviceId = { exact: deviceIds.video };
+
+  await joinRoom(token, connectOptions);
+
+  // After the video session, display the room selection modal.
+  return selectAndJoinRoom();
+
+  /*
   const formData = await selectRoom($joinRoomModal, error);
   if (!formData) {
     // User wants to change the camera and microphone.
@@ -104,6 +126,7 @@ async function selectAndJoinRoom(error = null) {
   } catch (error) {
     return selectAndJoinRoom(error);
   }
+  */
 }
 
 /**

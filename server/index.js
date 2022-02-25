@@ -55,7 +55,12 @@ app.use('/examples', express.static(examplesPath));
  * Default to the Quick Start application.
  */
 app.get('/', (request, response) => {
-  response.redirect('/quickstart');
+  const params = request.originalUrl.split('?');
+  if (params.length === 1) {
+    response.redirect('/quickstart');
+  } else {
+    response.redirect('/quickstart?' + params[1]);
+  }
 });
 
 /**

@@ -52,3 +52,7 @@ package-lock.json
 # The generated helpers.js
 **/public/helpers.js
 **/public/helpers*.js
+
+# vi
+*.swp
+
